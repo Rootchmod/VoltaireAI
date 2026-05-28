@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoltaireAI Test Page</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 50px 20px;
+            line-height: 1.6;
+            color: #333;
+        }
+        h1 {
+            color: #0066cc;
+        }
+        .demo-section {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .demo-section h3 {
+            margin-top: 0;
+            color: #0066cc;
+        }
+        code {
+            background: #e0e0e0;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.9em;
+        }
+        .features {
+            list-style: none;
+            padding: 0;
+        }
+        .features li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #0066cc;
+            font-weight: bold;
+        }
+        .api-controls {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .api-controls label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        .api-controls input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+        .api-controls button {
+            padding: 8px 16px;
+            background: #0066cc;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        .api-controls button:hover {
+            background: #0052a3;
+        }
+    </style>
+</head>
+<body>
+    <h1>VoltaireAI Test Page</h1>
+    <p>This page demonstrates the VoltaireAI floating button and dialog component.</p>
+
+    <div class="demo-section">
+        <h3>Features</h3>
+        <ul class="features">
+            <li>Nested ring floating button design (60px outer, 40px inner)</li>
+            <li>Blue theme (#0066cc)</li>
+            <li>Draggable floating button</li>
+            <li>Click to show/hide dialog</li>
+            <li>Draggable dialog window</li>
+            <li>Chat-style message display</li>
+            <li>User messages on the right (blue)</li>
+            <li>AI messages on the left (gray)</li>
+            <li>Markdown rendering support (via marked.js)</li>
+            <li>Typing indicator during API calls</li>
+        </ul>
+    </div>
+
+    <div class="demo-section">
+        <h3>API Controls</h3>
+        <div class="api-controls">
+            <label for="api-url">Backend URL:</label>
+            <input type="text" id="api-url" value="http://localhost:8000" placeholder="http://localhost:8000">
+
+            <label for="site-id">Site ID:</label>
+            <input type="text" id="site-id" value="default" placeholder="default">
+
+            <div style="margin-top: 10px;">
+                <button onclick="applySettings()">Apply Settings</button>
+                <button onclick="toggleDialog()">Toggle Dialog</button>
+                <button onclick="sendTestMessage()">Send Test Message</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="demo-section">
+        <h3>Testing Instructions</h3>
+        <ol>
+            <li>Start the backend server: <code>cd backend && python main.py</code></li>
+            <li>Open this page in a browser: <code>test.html</code></li>
+            <li>Click the floating button in the bottom-right corner</li>
+            <li>Type a message and press Enter or click Send</li>
+            <li>Try dragging the floating button and dialog</li>
+            <li>Test with different backend URLs if needed</li>
+        </ol>
+    </div>
+
+    <div class="demo-section">
+        <h3>Console Commands</h3>
+        <p>Open the browser console (F12) and try:</p>
+        <code>VoltaireAI.toggle()</code> - Toggle dialog visibility<br>
+        <code>VoltaireAI.sendMessage("Hello!")</code> - Send a message programmatically<br>
+        <code>VoltaireAI.setSiteId("my-site")</code> - Set site ID<br>
+        <code>VoltaireAI.getState()</code> - Get current state
+    </div>
+
+    <script>
+        // Configure base URL before loading the script
+        window.VOLTAIRE_BASE_URL = 'http://localhost:8000';
+
+        function applySettings() {
+            const apiUrl = document.getElementById('api-url').value;
+            const siteId = document.getElementById('site-id').value;
+
+            window.VOLTAIRE_BASE_URL = apiUrl;
+            if (window.VoltaireAI) {
+                window.VoltaireAI.setSiteId(siteId);
+                console.log('Settings applied:', { apiUrl, siteId });
+            }
+        }
+
+        function toggleDialog() {
+            if (window.VoltaireAI) {
+                window.VoltaireAI.toggle();
+            }
+        }
+
+        function sendTestMessage() {
+            if (window.VoltaireAI) {
+                window.VoltaireAI.sendMessage('This is a test message from the control panel.');
+            }
+        }
+
+        // Apply initial settings after VoltaireAI loads
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                applySettings();
+            }, 100);
+        });
+    </script>
+    <script src="frontend/voltaire.js"></script>
+</body>
+</html>
