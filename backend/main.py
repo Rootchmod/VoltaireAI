@@ -3,6 +3,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
+# 导入API路由
+from backend.api.routes import router as api_router
+
 app = FastAPI(
     title="VoltaireAI Backend",
     description="AI-powered website automation and Q&A system",
@@ -17,6 +20,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# 注册API路由
+app.include_router(api_router)
 
 @app.get("/")
 async def root():
