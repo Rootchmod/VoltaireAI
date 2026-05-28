@@ -1,7 +1,7 @@
 # backend/config/config_loader.py
 import json
 import os
-from typing import Dict, Any, Optional
+from typing import Dict, Any
 
 DEFAULT_SETTINGS = {
     "model_sources": [
