@@ -42,6 +42,12 @@ def test_get_settings_endpoint():
 
 def test_update_settings_endpoint():
     """测试更新配置端点"""
+    import copy
+    from config.config_loader import load_settings, save_settings
+
+    # Save original settings to restore later
+    original_settings = load_settings()
+
     new_settings = {
         "model_sources": [
             {
@@ -52,10 +58,47 @@ def test_update_settings_endpoint():
                 "model": "gpt-4"
             }
         ],
-        "main_workflow": "workflows/main.json"
+        "main_workflow": "workflows/main.json",
+        "default_model_source": "test_model"
     }
 
-    response = client.post("/api/settings", json=new_settings)
+    try:
+        response = client.post("/api/settings", json=new_settings)
+
+        assert response.status_code == 200
+        assert response.json()["message"] == "Settings updated successfully"
+    finally:
+        # Restore original settings
+        save_settings(original_settings)
+
+
+def test_execution_feedback_success():
+    """测试执行反馈端点（成功）"""
+    feedback_data = {
+        "status": "success",
+        "message": "操作执行成功",
+        "original_request": "点击登录按钮",
+        "site_id": "test-site"
+    }
+    response = client.post("/api/execution-feedback", json=feedback_data)
 
     assert response.status_code == 200
-    assert response.json()["message"] == "Settings updated successfully"
+    data = response.json()
+    assert data["status"] == "acknowledged"
+
+
+def test_execution_feedback_failure():
+    """测试执行反馈端点（失败）"""
+    feedback_data = {
+        "status": "failed",
+        "message": "元素未找到: #login-btn",
+        "original_request": "点击登录按钮",
+        "site_id": "test-site"
+    }
+    response = client.post("/api/execution-feedback", json=feedback_data)
+
+    assert response.status_code == 200
+    data = response.json()
+    # Should provide retry or acknowledge the failure
+    assert "status" in data
+    assert "message" in data

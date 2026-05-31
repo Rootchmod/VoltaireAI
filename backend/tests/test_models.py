@@ -35,7 +35,7 @@ def test_chat_response():
     response = ChatResponse(
         message="AI回复内容",
         intent=IntentType.OPERATION,
-        code="<js-start>click('#login-btn')<js-end>",
+        code="```js-start\nclick('#login-btn')\n```js-end",
         checklist={"plan": [], "progress": {"total": 0}}
     )
 

@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoltaireAI Admin</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f0f2f5; color: #333; min-height: 100vh;
+        }
+        .app-header {
+            background: linear-gradient(135deg, #0066cc, #0052a3);
+            color: #fff; padding: 20px 32px;
+            display: flex; align-items: center; justify-content: space-between;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        .app-header h1 { font-size: 22px; font-weight: 600; }
+        .app-header .subtitle { font-size: 13px; opacity: 0.8; margin-top: 2px; }
+        .app-header .status { font-size: 13px; display: flex; align-items: center; gap: 6px; }
+        .app-header .status-dot {
+            width: 8px; height: 8px; border-radius: 50%; display: inline-block;
+        }
+        .status-dot.online { background: #52c41a; }
+        .status-dot.offline { background: #ff4d4f; }
+
+        .tabs { display: flex; background: #fff; padding: 0 32px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+        .tab-btn {
+            padding: 14px 24px; border: none; background: none; cursor: pointer;
+            font-size: 14px; color: #666; border-bottom: 2px solid transparent;
+            transition: all 0.2s; font-weight: 500;
+        }
+        .tab-btn:hover { color: #0066cc; }
+        .tab-btn.active { color: #0066cc; border-bottom-color: #0066cc; }
+
+        .tab-content { display: none; padding: 24px 32px; max-width: 1100px; }
+        .tab-content.active { display: block; }
+
+        .card {
+            background: #fff; border-radius: 8px; padding: 20px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08); margin-bottom: 16px;
+        }
+        .card h3 { font-size: 16px; font-weight: 600; margin-bottom: 16px; color: #1a1a1a; }
+        .card-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 16px;
+        }
+        .card-header h3 { margin-bottom: 0; }
+
+        .empty-state {
+            text-align: center; padding: 48px 20px; color: #999;
+        }
+        .empty-state p { font-size: 14px; margin-top: 8px; }
+
+        table { width: 100%; border-collapse: collapse; }
+        table th, table td {
+            text-align: left; padding: 10px 12px; border-bottom: 1px solid #f0f0f0;
+            font-size: 14px;
+        }
+        table th { font-weight: 600; color: #666; font-size: 13px; }
+        table tr:hover td { background: #fafafa; }
+
+        input[type="text"], input[type="url"], input[type="password"], textarea, select {
+            width: 100%; padding: 8px 12px; border: 1px solid #d9d9d9; border-radius: 4px;
+            font-size: 14px; font-family: inherit; transition: border-color 0.2s;
+            background: #fff;
+        }
+        input[type="text"]:focus, input[type="url"]:focus, input[type="password"]:focus, textarea:focus, select:focus {
+            outline: none; border-color: #0066cc; box-shadow: 0 0 0 2px rgba(0,102,204,0.15);
+        }
+        textarea { resize: vertical; min-height: 80px; }
+
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 4px; color: #555; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .form-actions { display: flex; gap: 8px; margin-top: 16px; }
+
+        .btn {
+            padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer;
+            font-size: 13px; font-weight: 500; transition: all 0.2s; display: inline-flex;
+            align-items: center; gap: 6px; white-space: nowrap;
+        }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-primary { background: #0066cc; color: #fff; }
+        .btn-primary:hover:not(:disabled) { background: #0052a3; }
+        .btn-danger { background: #ff4d4f; color: #fff; }
+        .btn-danger:hover:not(:disabled) { background: #d9363e; }
+        .btn-outline { background: #fff; color: #333; border: 1px solid #d9d9d9; }
+        .btn-outline:hover:not(:disabled) { color: #0066cc; border-color: #0066cc; }
+        .btn-success { background: #52c41a; color: #fff; }
+        .btn-success:hover:not(:disabled) { background: #389e0d; }
+        .btn-sm { padding: 4px 10px; font-size: 12px; }
+
+        .tag {
+            display: inline-block; padding: 2px 8px; border-radius: 3px;
+            font-size: 12px; background: #f0f0f0; color: #666;
+        }
+        .tag-blue { background: #e6f4ff; color: #0066cc; }
+        .tag-green { background: #f6ffed; color: #52c41a; }
+
+        .toast {
+            position: fixed; top: 20px; right: 20px; z-index: 9999;
+            padding: 12px 20px; border-radius: 6px; color: #fff; font-size: 14px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transform: translateX(120%); transition: transform 0.3s ease;
+            max-width: 400px;
+        }
+        .toast.show { transform: translateX(0); }
+        .toast.success { background: #52c41a; }
+        .toast.error { background: #ff4d4f; }
+        .toast.info { background: #0066cc; }
+
+        .modal-overlay {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+            z-index: 1000; align-items: center; justify-content: center;
+        }
+        .modal-overlay.show { display: flex; }
+        .modal {
+            background: #fff; border-radius: 8px; width: 600px; max-width: 90vw;
+            max-height: 80vh; display: flex; flex-direction: column; box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        }
+        .modal-header {
+            padding: 16px 20px; border-bottom: 1px solid #f0f0f0;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .modal-header h3 { font-size: 16px; margin: 0; }
+        .modal-close { background: none; border: none; font-size: 20px; cursor: pointer; color: #999; padding: 0 4px; }
+        .modal-close:hover { color: #333; }
+        .modal-body { padding: 20px; overflow-y: auto; flex: 1; }
+        .modal-footer { padding: 12px 20px; border-top: 1px solid #f0f0f0; display: flex; justify-content: flex-end; gap: 8px; }
+
+        .kb-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+        .kb-card {
+            background: #fff; border: 1px solid #e8e8e8; border-radius: 8px;
+            padding: 16px 18px; transition: all 0.2s; cursor: default;
+            display: flex; flex-direction: column; gap: 8px;
+        }
+        .kb-card:hover { border-color: #0066cc; box-shadow: 0 2px 8px rgba(0,102,204,0.1); }
+        .kb-card .kb-card-header { display: flex; justify-content: space-between; align-items: flex-start; }
+        .kb-card .kb-card-title { font-size: 15px; font-weight: 600; color: #1a1a1a; }
+        .kb-card .kb-card-desc { font-size: 13px; color: #666; line-height: 1.5; min-height: 20px; }
+        .kb-card .kb-card-desc.empty { color: #bbb; font-style: italic; }
+        .kb-card .kb-card-meta { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+        .kb-card .kb-card-actions { display: flex; gap: 6px; margin-top: 2px; }
+        .kb-card .kb-edit-desc {
+            font-size: 11px; color: #0066cc; cursor: pointer; border: none; background: none; padding: 0;
+            text-decoration: none; white-space: nowrap;
+        }
+        .kb-card .kb-edit-desc:hover { text-decoration: underline; }
+        .kb-edit-inline { display: flex; gap: 6px; margin-top: 4px; }
+        .kb-edit-inline input { flex: 1; padding: 5px 8px; font-size: 13px; border: 1px solid #d9d9d9; border-radius: 4px; }
+        .kb-edit-inline button { padding: 4px 10px; font-size: 12px; white-space: nowrap; }
+        .kb-category-header {
+            font-size: 13px; font-weight: 600; color: #888; margin: 16px 0 10px;
+            padding-bottom: 6px; border-bottom: 1px solid #f0f0f0;
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .kb-category-header:first-child { margin-top: 0; }
+
+        .loading-spinner {
+            display: inline-block; width: 14px; height: 14px;
+            border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff;
+            border-radius: 50%; animation: spin 0.6s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .agent-card {
+            border: 1px solid #f0f0f0; border-radius: 6px; padding: 16px;
+            margin-bottom: 12px;
+        }
+        .agent-card:hover { border-color: #d9d9d9; }
+        .agent-card .agent-name { font-size: 15px; font-weight: 600; }
+        .agent-card .agent-type { font-size: 12px; }
+        .agent-card .agent-desc { font-size: 13px; color: #666; margin-top: 4px; }
+        .agent-card .agent-meta { font-size: 12px; color: #999; margin-top: 6px; }
+        .agent-card .agent-actions { margin-top: 10px; display: flex; gap: 8px; }
+
+        .upload-zone {
+            border: 2px dashed #d9d9d9; border-radius: 6px; padding: 32px;
+            text-align: center; cursor: pointer; transition: all 0.2s;
+        }
+        .upload-zone:hover { border-color: #0066cc; background: #fafafa; }
+        .upload-zone.dragover { border-color: #0066cc; background: #e6f4ff; }
+        .upload-zone p { font-size: 14px; color: #999; }
+
+        .inline-flex { display: flex; align-items: center; gap: 8px; }
+        .mt-12 { margin-top: 12px; }
+        .mb-12 { margin-bottom: 12px; }
+        .text-sm { font-size: 13px; color: #666; }
+        .text-muted { color: #999; }
+        .flex-between { display: flex; justify-content: space-between; align-items: center; }
+        .gap-8 { gap: 8px; }
+        .w-full { width: 100%; }
+
+        .connection-result {
+            padding: 10px 14px; border-radius: 4px; font-size: 13px; margin-top: 10px;
+        }
+        .connection-result.success { background: #f6ffed; color: #389e0d; border: 1px solid #b7eb8f; }
+        .connection-result.error { background: #fff2f0; color: #d9363e; border: 1px solid #ffccc7; }
+
+        /* Sitemap Builder */
+        .sitemap-builder { border: 2px solid #0066cc; }
+        .sitemap-builder .builder-header {
+            display: flex; align-items: center; gap: 12px; margin-bottom: 16px;
+        }
+        .sitemap-builder .builder-icon {
+            width: 40px; height: 40px; border-radius: 8px;
+            background: linear-gradient(135deg, #0066cc, #0052a3);
+            color: #fff; display: flex; align-items: center; justify-content: center;
+            font-size: 20px; flex-shrink: 0;
+        }
+        .progress-container {
+            background: #f5f5f5; border-radius: 10px; height: 8px;
+            margin: 12px 0; overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%; background: linear-gradient(90deg, #0066cc, #00a854);
+            border-radius: 10px; transition: width 0.4s ease; width: 0%;
+        }
+        .progress-bar.running { animation: progressPulse 1.5s ease-in-out infinite; }
+        .progress-bar.done { background: #52c41a; }
+        .progress-bar.error { background: #ff4d4f; }
+        @keyframes progressPulse {
+            0%,100% { opacity: 1; } 50% { opacity: 0.6; }
+        }
+        .progress-steps {
+            display: flex; gap: 4px; margin: 8px 0; flex-wrap: wrap;
+        }
+        .progress-step {
+            font-size: 12px; padding: 4px 10px; border-radius: 12px;
+            background: #f0f0f0; color: #999;
+        }
+        .progress-step.active { background: #e6f4ff; color: #0066cc; font-weight: 600; }
+        .progress-step.done { background: #f6ffed; color: #52c41a; }
+        .progress-step.error { background: #fff2f0; color: #d9363e; }
+        .progress-log {
+            background: #1a1a1a; color: #52c41a; border-radius: 6px;
+            padding: 12px 16px; font-family: 'Courier New', monospace;
+            font-size: 12px; max-height: 160px; overflow-y: auto;
+            line-height: 1.6; display: none; margin-top: 8px;
+        }
+        .progress-log.show { display: block; }
+        .progress-log .log-line { color: #999; }
+        .progress-log .log-line.highlight { color: #fff; }
+        .progress-log .log-line.success { color: #52c41a; }
+        .progress-log .log-line.warn { color: #faad14; }
+        .sitemap-result {
+            display: none; margin-top: 12px; padding: 12px 16px;
+            background: #f6ffed; border-radius: 6px; border: 1px solid #b7eb8f;
+        }
+        .sitemap-result.show { display: block; }
+        .sitemap-result .result-stats {
+            display: flex; gap: 20px; flex-wrap: wrap; margin-top: 8px;
+        }
+        .sitemap-result .stat-item {
+            text-align: center; padding: 8px 16px; background: #fff; border-radius: 6px;
+        }
+        .sitemap-result .stat-value { font-size: 24px; font-weight: 700; color: #0066cc; }
+        .sitemap-result .stat-label { font-size: 12px; color: #999; }
+
+        @media (max-width: 640px) {
+            .app-header { padding: 16px; flex-direction: column; align-items: flex-start; gap: 8px; }
+            .tabs { padding: 0 16px; overflow-x: auto; }
+            .tab-content { padding: 16px; }
+            .form-row { grid-template-columns: 1fr; }
+            .modal { width: 95vw; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-header">
+        <div>
+            <h1>VoltaireAI Admin</h1>
+            <div class="subtitle">管理后台 — 知识库 · Agent · 设置</div>
+        </div>
+        <div class="status">
+            <span class="status-dot offline" id="statusDot"></span>
+            <span id="statusText">检查连接中...</span>
+        </div>
+    </div>
+
+    <div class="tabs" id="tabs">
+        <button class="tab-btn active" data-tab="knowledge">知识库</button>
+        <button class="tab-btn" data-tab="agents">Agent 管理</button>
+        <button class="tab-btn" data-tab="settings">系统设置</button>
+    </div>
+
+    <!-- ========== TAB: Knowledge Base ========== -->
+    <div class="tab-content active" id="tab-knowledge">
+        <div class="card">
+            <div class="card-header">
+                <h3>知识库列表</h3>
+                <div style="display:flex;gap:8px;">
+                    <button class="btn btn-outline btn-sm" onclick="showCreateCollection()">新建库</button>
+                    <button class="btn btn-outline btn-sm" onclick="refreshCollections()">刷新</button>
+                </div>
+            </div>
+            <div id="create-collection-form" style="display:none;margin-bottom:16px;padding:16px;background:#fafafa;border-radius:6px;">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="new-col-category">类别</label>
+                        <select id="new-col-category">
+                            <option value="table">表格 (操作指引)</option>
+                            <option value="document">文档 (操作文档)</option>
+                            <option value="sitemap">站点地图 (页面元素)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-col-name">库名称</label>
+                        <input type="text" id="new-col-name" placeholder="例如: inventory_guide">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="new-col-desc">备注说明 <span class="text-sm text-muted">(帮助AI识别和调用此知识库)</span></label>
+                    <input type="text" id="new-col-desc" placeholder="例如: 库存入库操作指引，适用于仓库管理员日常入库流程">
+                </div>
+                <div class="form-actions">
+                    <button class="btn btn-primary btn-sm" onclick="createCollection()">创建</button>
+                    <button class="btn btn-outline btn-sm" onclick="document.getElementById('create-collection-form').style.display='none'">取消</button>
+                </div>
+            </div>
+            <div id="collections-list"><div class="empty-state"><p>加载中...</p></div></div>
+        </div>
+
+        <div class="card">
+            <h3>上传文档到知识库</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="upload-category">知识库类别</label>
+                    <select id="upload-category">
+                        <option value="document">文档 (操作文档)</option>
+                        <option value="table">表格 (操作指引)</option>
+                        <option value="sitemap">站点地图 (页面元素)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="upload-name">目标库名</label>
+                    <input type="text" id="upload-name" value="default" placeholder="默认: default">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="optimization-strategy">优化策略</label>
+                    <select id="optimization-strategy" onchange="updateStrategyInfo()">
+                        <option value="">加载中...</option>
+                    </select>
+                </div>
+                <div class="form-group" style="display:flex;align-items:flex-end;">
+                    <div id="strategy-core-idea" class="text-sm text-muted" style="padding:8px 0;"></div>
+                </div>
+            </div>
+            <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
+                <p>点击选择文件，或拖拽文件到此处</p>
+                <p class="text-sm text-muted mt-12">支持 .txt, .md, .html 等文本文件</p>
+            </div>
+            <input type="file" id="fileInput" style="display:none" accept=".txt,.md,.html,.json,.csv,.xml">
+            <div class="form-actions">
+                <button class="btn btn-primary" onclick="uploadDocument()">上传</button>
+            </div>
+            <div id="upload-result" class="mt-12"></div>
+        </div>
+    </div>
+
+    <!-- ========== TAB: Agent Management ========== -->
+    <div class="tab-content" id="tab-agents">
+        <div class="card">
+            <div class="card-header">
+                <h3>Agent 列表</h3>
+                <button class="btn btn-outline btn-sm" onclick="refreshAgents()">刷新</button>
+            </div>
+            <div id="agents-list"><div class="empty-state"><p>加载中...</p></div></div>
+        </div>
+    </div>
+
+    <!-- ========== TAB: Settings ========== -->
+    <div class="tab-content" id="tab-settings">
+        <!-- ==== Sitemap Builder Panel ==== -->
+        <div class="card sitemap-builder">
+            <div class="builder-header">
+                <div class="builder-icon">&#128269;</div>
+                <div>
+                    <h3 style="margin:0;">站点地图一键生成器</h3>
+                    <p class="text-sm text-muted" style="margin:2px 0 0 0;">自动扫描目标网站所有可交互元素，存入知识库供AI调用</p>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="sitemap-url">目标网站 URL</label>
+                    <input type="url" id="sitemap-url" placeholder="https://example.com" value="">
+                </div>
+                <div class="form-group">
+                    <label for="sitemap-name">知识库名称</label>
+                    <input type="text" id="sitemap-name" value="default" placeholder="默认: default">
+                </div>
+            </div>
+            <div style="margin-top:8px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
+                <label style="font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px;">
+                    <input type="checkbox" id="sitemap-explore" checked onchange="onExploreChange()">
+                    智能探索 (LLM驱动递归遍历所有页面)
+                </label>
+                <span style="font-size:12px;color:#999;" id="explore-params">
+                    深度: <input type="number" id="sitemap-max-depth" value="5" min="1" max="10" style="width:50px;padding:3px 6px;font-size:12px;">
+                    最大点击: <input type="number" id="sitemap-max-clicks" value="80" min="10" max="300" style="width:55px;padding:3px 6px;font-size:12px;">
+                </span>
+            </div>
+            <div style="margin-top:8px;">
+                <a href="javascript:void(0)" onclick="toggleLoginConfig()" style="font-size:13px;color:#0066cc;text-decoration:none;">
+                    &#9654; 登录配置（如果目标网站需要登录）
+                </a>
+                <div id="sitemap-login-config" style="display:none;margin-top:8px;padding:12px;background:#fafafa;border-radius:6px;">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="sitemap-login-url">登录页面 URL</label>
+                            <input type="url" id="sitemap-login-url" placeholder="https://example.com/login">
+                        </div>
+                        <div class="form-group">
+                            <label for="sitemap-login-submit">登录按钮选择器</label>
+                            <input type="text" id="sitemap-login-submit" placeholder="button[type=submit] 或 #login-btn">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="sitemap-username">用户名</label>
+                            <input type="text" id="sitemap-username" placeholder="用户名/账号">
+                        </div>
+                        <div class="form-group">
+                            <label for="sitemap-password">密码</label>
+                            <input type="password" id="sitemap-password" placeholder="密码">
+                        </div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:16px;margin-top:8px;">
+                        <label style="font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px;">
+                            <input type="checkbox" id="sitemap-manual-login" onchange="onManualLoginChange()">
+                            手动登录（服务器端打开可见浏览器，自动检测登录完成，最多等180秒）
+                        </label>
+                        <span class="tag tag-green" id="cookie-status" style="display:none;">已有缓存登录凭证</span>
+                    </div>
+                    <p class="text-sm text-muted" style="margin-top:4px;">
+                        登录后Cookie自动缓存，下次扫描无需重新登录。手动登录模式下，系统会自动检测页面跳转来判断登录是否完成。
+                    </p>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button class="btn btn-primary" id="btn-start-sitemap" onclick="startSitemapGeneration()">开始扫描</button>
+                <button class="btn btn-outline btn-sm" id="btn-cancel-sitemap" onclick="cancelSitemapGeneration()" style="display:none;">取消</button>
+            </div>
+            <div id="sitemap-progress-area" style="display:none;">
+                <div class="progress-steps" id="sitemap-steps">
+                    <span class="progress-step" data-step="init">启动浏览器</span>
+                    <span class="progress-step" data-step="launch">启动Chromium</span>
+                    <span class="progress-step" data-step="navigate">加载页面</span>
+                    <span class="progress-step" data-step="wait">等待渲染</span>
+                    <span class="progress-step" data-step="scan" style="display:none;">扫描元素</span>
+                    <span class="progress-step" data-step="scan_done" style="display:none;">扫描完成</span>
+                    <span class="progress-step" data-step="explore_start">智能探索</span>
+                    <span class="progress-step" data-step="explore_nav">页面导航</span>
+                    <span class="progress-step" data-step="explore_scan">扫描元素</span>
+                    <span class="progress-step" data-step="explore_llm">LLM决策</span>
+                    <span class="progress-step" data-step="explore_click">点击探索</span>
+                    <span class="progress-step" data-step="explore_new">发现新元素</span>
+                    <span class="progress-step" data-step="explore_sub">子页面</span>
+                    <span class="progress-step" data-step="explore_done">探索完成</span>
+                    <span class="progress-step" data-step="upload">上传知识库</span>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar" id="sitemap-progress-bar"></div>
+                </div>
+                <div style="font-size:13px;color:#666;" id="sitemap-status-text">准备中...</div>
+                <div class="progress-log" id="sitemap-log"></div>
+            </div>
+            <div class="sitemap-result" id="sitemap-result">
+                <strong style="color:#52c41a;">&#10004; 站点地图生成成功!</strong>
+                <div class="result-stats" id="sitemap-stats"></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>模型源配置</h3>
+            <p class="text-sm text-muted mb-12">配置 LLM API 连接，支持 OpenAI 格式的任意 API。</p>
+            <div class="form-group">
+                <label for="setting-name">名称</label>
+                <input type="text" id="setting-name" placeholder="例如 deepseek">
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="setting-url">Base URL</label>
+                    <input type="url" id="setting-url" placeholder="https://api.deepseek.com">
+                </div>
+                <div class="form-group">
+                    <label for="setting-model">模型</label>
+                    <input type="text" id="setting-model" placeholder="deepseek-chat">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="setting-key">API Key</label>
+                <input type="password" id="setting-key" placeholder="sk-...">
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-primary" onclick="saveSettings()">保存设置</button>
+                <button class="btn btn-outline" onclick="testConnection()" id="testConnBtn">测试连接</button>
+            </div>
+            <div id="connection-result"></div>
+        </div>
+
+        <div class="card">
+            <h3>工作流配置</h3>
+            <div class="form-group">
+                <label for="setting-workflow">默认工作流路径</label>
+                <input type="text" id="setting-workflow" placeholder="workflows/main.json">
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-primary" onclick="saveSettings()">保存设置</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== Agent Edit Modal ========== -->
+    <div class="modal-overlay" id="agentModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>编辑 Agent</h3>
+                <button class="modal-close" onclick="closeAgentModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="edit-agent-id">ID</label>
+                    <input type="text" id="edit-agent-id" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="edit-agent-name">名称</label>
+                    <input type="text" id="edit-agent-name">
+                </div>
+                <div class="form-group">
+                    <label for="edit-agent-type">类型</label>
+                    <select id="edit-agent-type">
+                        <option value="operation">operation (操作)</option>
+                        <option value="question">question (问答)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="edit-agent-role">角色提示词 (Role Prompt)</label>
+                    <textarea id="edit-agent-role" rows="4"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="edit-agent-rules">规则 (每行一条)</label>
+                    <textarea id="edit-agent-rules" rows="4" placeholder="生成testing-library代码时用&lt;js-start&gt;&lt;js-end&gt;包裹"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeAgentModal()">取消</button>
+                <button class="btn btn-primary" onclick="saveAgentEdit()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== Collection Detail Modal ========== -->
+    <div class="modal-overlay" id="collectionModal">
+        <div class="modal" style="width: 850px;">
+            <div class="modal-header">
+                <h3>知识库详情 — <span id="collection-site-id"></span></h3>
+                <button class="modal-close" onclick="closeCollectionModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="collection-modal-body">
+                <div class="empty-state"><p>加载中...</p></div>
+            </div>
+            <div class="modal-footer">
+                <span class="text-sm text-muted" id="collection-elem-count"></span>
+                <button class="btn btn-outline" onclick="closeCollectionModal()">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        const BASE_URL = (window.VOLTAIRE_ADMIN_URL || 'http://localhost:8001').replace(/\/+$/, '');
+        let editingAgentId = null;
+
+        // ======================== Toast ========================
+        function showToast(message, type) {
+            var t = document.getElementById('toast');
+            t.textContent = message;
+            t.className = 'toast ' + type + ' show';
+            clearTimeout(t._hide);
+            t._hide = setTimeout(function() { t.classList.remove('show'); }, 3000);
+        }
+
+        // ======================== Connection Check ========================
+        function checkConnection() {
+            var dot = document.getElementById('statusDot');
+            var text = document.getElementById('statusText');
+            fetch(BASE_URL + '/health')
+                .then(function(r) { return r.ok; })
+                .then(function(ok) {
+                    dot.className = 'status-dot ' + (ok ? 'online' : 'offline');
+                    text.textContent = ok ? '已连接' : '连接失败';
+                })
+                .catch(function() {
+                    dot.className = 'status-dot offline';
+                    text.textContent = '无法连接';
+                });
+        }
+
+        // ======================== Tabs ========================
+        document.getElementById('tabs').addEventListener('click', function(e) {
+            var btn = e.target.closest('.tab-btn');
+            if (!btn) return;
+            var tab = btn.dataset.tab;
+            document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+            btn.classList.add('active');
+            document.querySelectorAll('.tab-content').forEach(function(c) { c.classList.remove('active'); });
+            document.getElementById('tab-' + tab).classList.add('active');
+        });
+
+        // ======================== Knowledge Base ========================
+        var KNOWN_COLLECTIONS = [];  // cache for lookup
+
+        function refreshCollections() {
+            var el = document.getElementById('collections-list');
+            el.innerHTML = '<div class="empty-state"><p>加载中...</p></div>';
+            fetch(BASE_URL + '/api/admin/collections')
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    var collections = data.collections || [];
+                    KNOWN_COLLECTIONS = collections;
+                    if (collections.length === 0) {
+                        el.innerHTML = '<div class="empty-state"><p>暂无知识库</p><p class="text-sm text-muted">上传文档或DOM元素后自动创建默认库</p></div>';
+                        return;
+                    }
+                    var grouped = data.grouped || {};
+                    var catNames = {table:'表格 (操作指引)', document:'文档 (操作文档)', sitemap:'站点地图 (页面元素)'};
+                    var html = '';
+                    ['sitemap','table','document'].forEach(function(cat) {
+                        var items = grouped[cat] || [];
+                        if (items.length === 0) return;
+                        html += '<div class="kb-category-header">' + (catNames[cat]||cat) + '</div>';
+                        html += '<div class="kb-cards">';
+                        items.forEach(function(c) {
+                            var isDefault = c.is_default;
+                            var desc = c.description || '';
+                            var descDisplay = desc ? esc(desc) : '<span class="kb-card-desc empty">暂无备注 — 点击编辑添加备注帮助AI识别</span>';
+
+                            var statusTag = isDefault
+                                ? '<span class="tag tag-green">系统默认</span>'
+                                : '<span class="tag">用户创建</span>';
+
+                            var delBtn = isDefault
+                                ? '<button class="btn btn-outline btn-sm" disabled title="系统默认库不可删除" style="opacity:0.4;font-size:11px;">🔒</button>'
+                                : '<button class="btn btn-danger btn-sm" style="font-size:11px;" onclick="event.stopPropagation(); deleteCollection(\'' + esc(c.category) + '\',\'' + esc(c.display_name) + '\')">删除</button>';
+
+                            html += '<div class="kb-card">' +
+                                '<div class="kb-card-header">' +
+                                    '<div class="kb-card-title">' + esc(c.display_name) + '</div>' +
+                                    statusTag +
+                                '</div>' +
+                                '<div class="kb-card-desc" id="kb-desc-' + esc(c.category) + '-' + esc(c.display_name) + '">' + descDisplay + '</div>' +
+                                '<div class="kb-card-meta">' +
+                                    '<span class="tag tag-blue">' + c.element_count + ' 个元素</span>' +
+                                    '<button class="kb-edit-desc" onclick="event.stopPropagation(); editDescription(\'' + esc(c.category) + '\',\'' + esc(c.display_name) + '\')">编辑备注</button>' +
+                                '</div>' +
+                                '<div class="kb-card-actions">' +
+                                    '<button class="btn btn-outline btn-sm" onclick="viewCollection(\'' + esc(c.category) + '\',\'' + esc(c.display_name) + '\')">查看详情</button>' +
+                                    delBtn +
+                                '</div>' +
+                            '</div>';
+                        });
+                        html += '</div>';
+                    });
+                    el.innerHTML = html;
+                })
+                .catch(function(err) {
+                    el.innerHTML = '<div class="empty-state"><p>加载失败</p><p class="text-sm text-muted">' + err.message + '</p></div>';
+                });
+        }
+
+        var _viewCat = null, _viewName = null;
+
+        function viewCollection(category, name) {
+            _viewCat = category;
+            _viewName = name;
+            var modal = document.getElementById('collectionModal');
+            document.getElementById('collection-site-id').textContent = category + ' / ' + name;
+            var body = document.getElementById('collection-modal-body');
+            body.innerHTML = '<div class="empty-state"><p>加载中...</p></div>';
+            document.getElementById('collection-elem-count').textContent = '';
+            modal.classList.add('show');
+
+            fetch(BASE_URL + '/api/admin/collections/' + encodeURIComponent(category) + '/' + encodeURIComponent(name))
+                .then(function(r) {
+                    if (!r.ok) throw new Error('获取详情失败 (' + r.status + ')');
+                    return r.json();
+                })
+                .then(function(data) {
+                    var elements = data.elements || [];
+                    document.getElementById('collection-elem-count').textContent = '共 ' + elements.length + ' 个元素';
+                    if (elements.length === 0) {
+                        body.innerHTML = '<div class="empty-state"><p>该知识库暂无元素</p></div>';
+                        return;
+                    }
+                    var html = '<table><thead><tr><th style="width:20%">ID</th><th style="width:10%">类型</th><th style="width:20%">选择器</th><th style="width:35%">内容</th><th style="width:15%">操作</th></tr></thead><tbody>';
+                    elements.forEach(function(elem) {
+                        var meta = elem.metadata || {};
+                        var elemType = meta.element_type || meta.type || '-';
+                        var selector = meta.selector || '-';
+                        var actions = meta.actions || '';
+                        var content = (elem.content || '').substring(0, 100);
+                        html += '<tr>' +
+                            '<td><code style="font-size:11px;word-break:break-all">' + esc(elem.id) + '</code></td>' +
+                            '<td><span class="tag">' + esc(elemType) + '</span></td>' +
+                            '<td><code style="font-size:11px;word-break:break-all">' + esc(selector) + '</code></td>' +
+                            '<td style="font-size:12px">' + esc(content) + (elem.content && elem.content.length > 100 ? '...' : '') + '</td>' +
+                            '<td><span class="text-sm text-muted">' + esc(actions) + '</span> ' +
+                            '<button class="btn btn-danger btn-sm" style="padding:2px 6px;font-size:11px;" onclick="deleteElement(\'' + esc(elem.id) + '\')" title="删除此元素">✕</button></td>' +
+                            '</tr>';
+                    });
+                    html += '</tbody></table>';
+                    body.innerHTML = html;
+                })
+                .catch(function(err) {
+                    body.innerHTML = '<div class="empty-state"><p>加载失败</p><p class="text-sm text-muted">' + esc(err.message) + '</p></div>';
+                });
+        }
+
+        function deleteElement(elementId) {
+            if (!_viewCat || !_viewName) return;
+            if (!confirm('确定删除元素 "' + elementId + '"？')) return;
+            fetch(BASE_URL + '/api/admin/collections/' + encodeURIComponent(_viewCat) + '/' + encodeURIComponent(_viewName) + '/elements/' + encodeURIComponent(elementId), { method: 'DELETE' })
+                .then(function(r) {
+                    if (!r.ok) throw new Error('删除失败');
+                    return r.json();
+                })
+                .then(function() {
+                    showToast('元素已删除', 'success');
+                    viewCollection(_viewCat, _viewName);  // refresh
+                    refreshCollections();
+                })
+                .catch(function(err) { showToast(err.message, 'error'); });
+        }
+
+        function closeCollectionModal() {
+            document.getElementById('collectionModal').classList.remove('show');
+            _viewCat = null;
+            _viewName = null;
+        }
+        document.getElementById('collectionModal').addEventListener('click', function(e) {
+            if (e.target === this) closeCollectionModal();
+        });
+
+        function deleteCollection(category, name) {
+            if (!confirm('确定删除知识库 "' + category + '/' + name + '"？此操作不可撤销。')) return;
+            fetch(BASE_URL + '/api/admin/collections/' + encodeURIComponent(category) + '/' + encodeURIComponent(name), { method: 'DELETE' })
+                .then(function(r) {
+                    if (!r.ok) return r.json().then(function(e) { throw new Error(e.detail || '删除失败'); });
+                    return r.json();
+                })
+                .then(function() {
+                    showToast('已删除知识库: ' + category + '/' + name, 'success');
+                    refreshCollections();
+                })
+                .catch(function(err) { showToast(err.message, 'error'); });
+        }
+
+        function showCreateCollection() {
+            var el = document.getElementById('create-collection-form');
+            el.style.display = el.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function createCollection() {
+            var category = document.getElementById('new-col-category').value;
+            var name = document.getElementById('new-col-name').value.trim();
+            var description = document.getElementById('new-col-desc').value.trim();
+            if (!name) { showToast('请输入库名称', 'error'); return; }
+            fetch(BASE_URL + '/api/admin/collections', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ category: category, name: name, description: description })
+            })
+                .then(function(r) {
+                    if (!r.ok) return r.json().then(function(e) { throw new Error(e.detail || '创建失败'); });
+                    return r.json();
+                })
+                .then(function() {
+                    showToast('知识库 ' + category + '/' + name + ' 创建成功', 'success');
+                    document.getElementById('create-collection-form').style.display = 'none';
+                    document.getElementById('new-col-name').value = '';
+                    document.getElementById('new-col-desc').value = '';
+                    refreshCollections();
+                })
+                .catch(function(err) { showToast(err.message, 'error'); });
+        }
+
+        function editDescription(category, name) {
+            var el = document.getElementById('kb-desc-' + category + '-' + name);
+            if (!el) return;
+            // Look up current description from cache
+            var currentDesc = '';
+            KNOWN_COLLECTIONS.forEach(function(c) {
+                if (c.category === category && c.display_name === name) {
+                    currentDesc = c.description || '';
+                }
+            });
+            el.innerHTML = '<div class="kb-edit-inline">' +
+                '<input type="text" id="kb-desc-input-' + category + '-' + name + '" value="' + esc(currentDesc) + '" placeholder="输入备注说明..." onkeydown="if(event.key===\'Enter\')saveDescription(\'' + esc(category) + '\',\'' + esc(name) + '\');if(event.key===\'Escape\')refreshCollections()">' +
+                '<button class="btn btn-primary btn-sm" onclick="saveDescription(\'' + esc(category) + '\',\'' + esc(name) + '\')">保存</button>' +
+                '<button class="btn btn-outline btn-sm" onclick="refreshCollections()">取消</button>' +
+                '</div>';
+            var input = document.getElementById('kb-desc-input-' + category + '-' + name);
+            if (input) { input.focus(); input.select(); }
+        }
+
+        function saveDescription(category, name) {
+            var input = document.getElementById('kb-desc-input-' + category + '-' + name);
+            if (!input) return;
+            var desc = input.value.trim();
+            fetch(BASE_URL + '/api/admin/collections/' + encodeURIComponent(category) + '/' + encodeURIComponent(name), {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ description: desc })
+            })
+                .then(function(r) {
+                    if (!r.ok) return r.json().then(function(e) { throw new Error(e.detail || '保存失败'); });
+                    return r.json();
+                })
+                .then(function() {
+                    showToast('备注已更新', 'success');
+                    refreshCollections();
+                })
+                .catch(function(err) { showToast(err.message, 'error'); });
+        }
+
+        // ======================== Document Upload ========================
+        var uploadZone = document.getElementById('uploadZone');
+        var fileInput = document.getElementById('fileInput');
+
+        uploadZone.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            uploadZone.classList.add('dragover');
+        });
+        uploadZone.addEventListener('dragleave', function() {
+            uploadZone.classList.remove('dragover');
+        });
+        uploadZone.addEventListener('drop', function(e) {
+            e.preventDefault();
+            uploadZone.classList.remove('dragover');
+            if (e.dataTransfer.files.length) fileInput.files = e.dataTransfer.files;
+        });
+        fileInput.addEventListener('change', function() {
+            if (fileInput.files.length) {
+                uploadZone.querySelector('p').textContent = '已选择: ' + fileInput.files[0].name;
+            }
+        });
+
+        function uploadDocument() {
+            var category = document.getElementById('upload-category').value;
+            var name = document.getElementById('upload-name').value.trim() || 'default';
+            var strategyId = document.getElementById('optimization-strategy').value;
+            var file = fileInput.files[0];
+            if (!file) { showToast('请选择要上传的文件', 'error'); return; }
+
+            var btns = document.querySelectorAll('#tab-knowledge .btn-primary');
+            var btn = btns[btns.length - 1];
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading-spinner"></span> 上传中...';
+
+            var formData = new FormData();
+            formData.append('category', category);
+            formData.append('name', name);
+            formData.append('strategy_id', strategyId);
+            formData.append('file', file);
+
+            fetch(BASE_URL + '/api/admin/documents/upload', { method: 'POST', body: formData })
+                .then(function(r) {
+                    if (!r.ok) return r.json().then(function(e) { throw new Error(e.detail || '上传失败'); });
+                    return r.json();
+                })
+                .then(function(data) {
+                    var stratMsg = data.strategy ? ' (策略: ' + data.strategy + ')' : '';
+                    showToast('文档上传成功 (' + data.size + ' 字符)' + stratMsg, 'success');
+                    document.getElementById('upload-result').innerHTML =
+                        '<div class="connection-result success">上传成功: ' + esc(data.filename) +
+                        ' → ' + esc(data.category) + '/' + esc(data.name) +
+                        ' (' + data.size + ' 字符)' + stratMsg + '</div>';
+                    fileInput.value = '';
+                    uploadZone.querySelector('p').textContent = '点击选择文件，或拖拽文件到此处';
+                    refreshCollections();
+                })
+                .catch(function(err) {
+                    showToast(err.message, 'error');
+                    document.getElementById('upload-result').innerHTML =
+                        '<div class="connection-result error">' + esc(err.message) + '</div>';
+                })
+                .finally(function() {
+                    btn.disabled = false;
+                    btn.textContent = '上传';
+                });
+        }
+
+        // ======================== Agent Management ========================
+        function refreshAgents() {
+            var el = document.getElementById('agents-list');
+            el.innerHTML = '<div class="empty-state"><p>加载中...</p></div>';
+            fetch(BASE_URL + '/api/admin/agents')
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    var agents = data.agents || [];
+                    if (agents.length === 0) {
+                        el.innerHTML = '<div class="empty-state"><p>暂无 Agent 配置</p></div>';
+                        return;
+                    }
+                    var html = '';
+                    agents.forEach(function(a) {
+                        var rules = (a.rules || []).join('；');
+                        var tools = (a.tools || []).join(', ');
+                        html += '<div class="agent-card">' +
+                            '<div class="flex-between">' +
+                            '<div><span class="agent-name">' + esc(a.name || a.id) + '</span> ' +
+                            '<span class="tag tag-green">' + esc(a.type) + '</span></div>' +
+                            '<span class="text-sm text-muted">' + esc(a.model_source || '') + '</span></div>' +
+                            '<div class="agent-desc">' + esc(a.role || '').substring(0, 200) + '</div>' +
+                            '<div class="agent-meta">' + (rules ? '规则: ' + esc(rules) : '') + (tools ? ' | 工具: ' + esc(tools) : '') + '</div>' +
+                            '<div class="agent-actions">' +
+                            '<button class="btn btn-outline btn-sm" onclick="openAgentEdit(\'' + esc(a.id) + '\')">编辑</button>' +
+                            '<button class="btn btn-danger btn-sm" onclick="deleteAgent(\'' + esc(a.id) + '\')">删除</button>' +
+                            '</div></div>';
+                    });
+                    el.innerHTML = html;
+                })
+                .catch(function(err) {
+                    el.innerHTML = '<div class="empty-state"><p>加载失败</p><p class="text-sm text-muted">' + err.message + '</p></div>';
+                });
+        }
+
+        function openAgentEdit(agentId) {
+            editingAgentId = agentId;
+            fetch(BASE_URL + '/api/admin/agents')
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    var agents = data.agents || [];
+                    var agent = agents.find(function(a) { return a.id === agentId; });
+                    if (!agent) { showToast('Agent 未找到', 'error'); return; }
+
+                    document.getElementById('edit-agent-id').value = agent.id;
+                    document.getElementById('edit-agent-name').value = agent.name || '';
+                    document.getElementById('edit-agent-type').value = agent.type || 'operation';
+                    document.getElementById('edit-agent-role').value = agent.role || '';
+                    document.getElementById('edit-agent-rules').value = (agent.rules || []).join('\n');
+                    document.getElementById('agentModal').classList.add('show');
+                })
+                .catch(function(err) { showToast(err.message, 'error'); });
+        }
+
+        function saveAgentEdit() {
+            var config = {
+                name: document.getElementById('edit-agent-name').value,
+                type: document.getElementById('edit-agent-type').value,
+                role: document.getElementById('edit-agent-role').value,
+                rules: document.getElementById('edit-agent-rules').value.split('\n').filter(Boolean)
+            };
+
+            fetch(BASE_URL + '/api/admin/agents/' + encodeURIComponent(editingAgentId), {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(config)
+            })
+                .then(function(r) {
+                    if (!r.ok) throw new Error('保存失败');
+                    return r.json();
+                })
+                .then(function() {
+                    showToast('Agent 已更新', 'success');
+                    closeAgentModal();
+                    refreshAgents();
+                })
+                .catch(function(err) { showToast(err.message, 'error'); });
+        }
+
+        function deleteAgent(agentId) {
+            if (!confirm('确定删除 Agent "' + agentId + '"？')) return;
+            fetch(BASE_URL + '/api/admin/agents/' + encodeURIComponent(agentId), { method: 'DELETE' })
+                .then(function(r) {
+                    if (!r.ok) throw new Error('删除失败');
+                    return r.json();
+                })
+                .then(function() {
+                    showToast('Agent 已删除: ' + agentId, 'success');
+                    refreshAgents();
+                })
+                .catch(function(err) { showToast(err.message, 'error'); });
+        }
+
+        function closeAgentModal() {
+            document.getElementById('agentModal').classList.remove('show');
+            editingAgentId = null;
+        }
+        // Close modal on overlay click
+        document.getElementById('agentModal').addEventListener('click', function(e) {
+            if (e.target === this) closeAgentModal();
+        });
+
+        // ======================== Strategies ========================
+        var ALL_STRATEGIES = [];
+
+        function loadStrategies() {
+            fetch(BASE_URL + '/api/admin/optimization-strategies')
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    ALL_STRATEGIES = data.strategies || [];
+                    var sel = document.getElementById('optimization-strategy');
+                    if (!sel) return;
+                    sel.innerHTML = '';
+                    var defaultId = data.default || 'hierarchical_indices';
+                    ALL_STRATEGIES.forEach(function(s) {
+                        var opt = document.createElement('option');
+                        opt.value = s.id;
+                        opt.textContent = s.name + ' (评分: ' + s.score + ')';
+                        if (s.id === defaultId) opt.selected = true;
+                        sel.appendChild(opt);
+                    });
+                    updateStrategyInfo();
+                })
+                .catch(function(err) {
+                    console.error('Load strategies failed:', err);
+                });
+        }
+
+        function updateStrategyInfo() {
+            var sel = document.getElementById('optimization-strategy');
+            var infoEl = document.getElementById('strategy-core-idea');
+            if (!sel || !infoEl) return;
+            var selectedId = sel.value;
+            var found = ALL_STRATEGIES.find(function(s) { return s.id === selectedId; });
+            if (found) {
+                infoEl.innerHTML = '<strong>核心思路：</strong>' + esc(found.core_idea);
+            } else {
+                infoEl.textContent = '';
+            }
+        }
+
+        // ======================== Settings ========================
+        function loadSettings() {
+            fetch(BASE_URL + '/api/settings')
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    var sources = data.model_sources || [];
+                    var source = sources[0] || {};
+                    document.getElementById('setting-name').value = source.name || '';
+                    document.getElementById('setting-url').value = source.base_url || '';
+                    document.getElementById('setting-model').value = source.model || '';
+                    document.getElementById('setting-key').value = source.api_key || '';
+                    // Fix: ensure workflow path is loaded from saved settings
+                    var wf = data.main_workflow || 'workflows/main.json';
+                    document.getElementById('setting-workflow').value = wf;
+                    console.log('Settings loaded: main_workflow=' + wf);
+                })
+                .catch(function(err) {
+                    console.error('Load settings failed:', err);
+                    showToast('加载设置失败: ' + err.message, 'error');
+                });
+        }
+
+        function saveSettings() {
+            var settings = {
+                model_sources: [{
+                    name: document.getElementById('setting-name').value || 'default',
+                    api_format: 'OpenAI',
+                    base_url: document.getElementById('setting-url').value,
+                    api_key: document.getElementById('setting-key').value,
+                    model: document.getElementById('setting-model').value,
+                    description: 'API configuration'
+                }],
+                main_workflow: document.getElementById('setting-workflow').value || 'workflows/main.json',
+                default_model_source: document.getElementById('setting-name').value || 'default'
+            };
+
+            fetch(BASE_URL + '/api/settings', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(settings)
+            })
+                .then(function(r) {
+                    if (!r.ok) throw new Error('保存失败');
+                    return r.json();
+                })
+                .then(function() {
+                    showToast('设置已保存', 'success');
+                })
+                .catch(function(err) { showToast(err.message, 'error'); });
+        }
+
+        function testConnection() {
+            var btn = document.getElementById('testConnBtn');
+            var resultEl = document.getElementById('connection-result');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading-spinner"></span> 测试中...';
+            resultEl.innerHTML = '';
+
+            var config = {
+                base_url: document.getElementById('setting-url').value,
+                api_key: document.getElementById('setting-key').value,
+                model: document.getElementById('setting-model').value
+            };
+
+            fetch(BASE_URL + '/api/admin/settings/test-connection', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(config)
+            })
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    var cls = data.status === 'success' ? 'success' : 'error';
+                    resultEl.innerHTML = '<div class="connection-result ' + cls + '">' + esc(data.message) + '</div>';
+                })
+                .catch(function(err) {
+                    resultEl.innerHTML = '<div class="connection-result error">连接失败: ' + esc(err.message) + '</div>';
+                })
+                .finally(function() {
+                    btn.disabled = false;
+                    btn.textContent = '测试连接';
+                });
+        }
+
+        // ======================== Utils ========================
+        function esc(s) {
+            if (typeof s !== 'string') return String(s || '');
+            var d = document.createElement('div');
+            d.appendChild(document.createTextNode(s));
+            return d.innerHTML;
+        }
+
+        // ======================== Sitemap Builder ========================
+        var sitemapEventSource = null;
+        var sitemapStepOrder = ['init','launch','navigate','wait','explore_start','explore_nav','explore_scan','explore_llm','explore_click','explore_new','explore_sub','explore_done','upload','upload_done'];
+        // Short version when explore=false: ['init','launch','navigate','wait','scan','scan_done','upload','upload_done']
+
+        function toggleLoginConfig() {
+            var el = document.getElementById('sitemap-login-config');
+            var link = el.previousElementSibling;
+            if (el.style.display === 'none') {
+                el.style.display = 'block';
+                link.innerHTML = '&#9660; 登录配置（如果目标网站需要登录）';
+            } else {
+                el.style.display = 'none';
+                link.innerHTML = '&#9654; 登录配置（如果目标网站需要登录）';
+            }
+        }
+
+        function onManualLoginChange() {
+            var manual = document.getElementById('sitemap-manual-login').checked;
+            var credFields = document.querySelectorAll('#sitemap-username, #sitemap-password');
+            credFields.forEach(function(f) { f.disabled = manual; });
+        }
+
+        function onExploreChange() {
+            var explore = document.getElementById('sitemap-explore').checked;
+            document.getElementById('sitemap-max-depth').disabled = !explore;
+            document.getElementById('sitemap-max-clicks').disabled = !explore;
+
+            // Toggle step order and visibility
+            if (explore) {
+                sitemapStepOrder = ['init','launch','navigate','wait','explore_start','explore_nav','explore_scan','explore_llm','explore_click','explore_new','explore_sub','explore_done','upload','upload_done'];
+            } else {
+                sitemapStepOrder = ['init','launch','navigate','wait','scan','scan_done','upload','upload_done'];
+            }
+            var exploreSteps = document.querySelectorAll('#sitemap-steps .progress-step[data-step^="explore_"]');
+            exploreSteps.forEach(function(s) { s.style.display = explore ? '' : 'none'; });
+            var scanSteps = document.querySelectorAll('#sitemap-steps .progress-step[data-step="scan"], #sitemap-steps .progress-step[data-step="scan_done"]');
+            scanSteps.forEach(function(s) { s.style.display = explore ? 'none' : ''; });
+        }
+
+        function startSitemapGeneration() {
+            var url = document.getElementById('sitemap-url').value.trim();
+            var name = document.getElementById('sitemap-name').value.trim() || 'default';
+
+            if (!url) { showToast('请输入目标网站 URL', 'error'); return; }
+
+            // Reset UI
+            document.getElementById('sitemap-progress-area').style.display = 'block';
+            document.getElementById('sitemap-result').classList.remove('show');
+            document.getElementById('sitemap-log').innerHTML = '';
+            document.getElementById('sitemap-log').classList.add('show');
+            document.getElementById('btn-start-sitemap').disabled = true;
+            document.getElementById('btn-cancel-sitemap').style.display = 'inline-block';
+
+            var bar = document.getElementById('sitemap-progress-bar');
+            bar.style.width = '0%';
+            bar.className = 'progress-bar running';
+
+            var steps = document.querySelectorAll('#sitemap-steps .progress-step');
+            steps.forEach(function(s) { s.classList.remove('active','done','error'); });
+
+            var statusEl = document.getElementById('sitemap-status-text');
+            statusEl.textContent = '正在连接...';
+
+            var log = document.getElementById('sitemap-log');
+            function addLog(msg, cls) {
+                var line = document.createElement('div');
+                line.className = 'log-line ' + (cls || '');
+                line.textContent = '[' + new Date().toLocaleTimeString() + '] ' + msg;
+                log.appendChild(line);
+                log.scrollTop = log.scrollHeight;
+            }
+
+            // Build SSE URL with optional login params
+            var sseUrl = BASE_URL + '/api/admin/sitemap/generate-stream?url=' + encodeURIComponent(url) + '&name=' + encodeURIComponent(name);
+
+            var loginUrl = document.getElementById('sitemap-login-url').value.trim();
+            var username = document.getElementById('sitemap-username').value.trim();
+            var password = document.getElementById('sitemap-password').value;
+            var loginSubmit = document.getElementById('sitemap-login-submit').value.trim();
+            var manualLogin = document.getElementById('sitemap-manual-login').checked;
+
+            // Exploration params
+            var doExplore = document.getElementById('sitemap-explore').checked;
+            var maxDepth = parseInt(document.getElementById('sitemap-max-depth').value) || 3;
+            var maxClicks = parseInt(document.getElementById('sitemap-max-clicks').value) || 80;
+            sseUrl += '&explore=' + doExplore + '&max_depth=' + maxDepth + '&max_total_clicks=' + maxClicks;
+
+            if (loginUrl) sseUrl += '&login_url=' + encodeURIComponent(loginUrl);
+            if (username && !manualLogin) sseUrl += '&username=' + encodeURIComponent(username);
+            if (password && !manualLogin) sseUrl += '&password=' + encodeURIComponent(password);
+            if (loginSubmit) sseUrl += '&login_submit_selector=' + encodeURIComponent(loginSubmit);
+            if (manualLogin) sseUrl += '&manual_login=true';
+
+            // Close existing connection
+            if (sitemapEventSource) { sitemapEventSource.close(); }
+
+            sitemapEventSource = new EventSource(sseUrl);
+            var stepIndex = 0;
+
+            sitemapEventSource.onmessage = function(event) {
+                try {
+                    var d = JSON.parse(event.data);
+                    var step = d.step, msg = d.message, data = d.data;
+
+                    addLog(msg, step === 'error' ? 'warn' : (step === 'done' || step === 'complete' ? 'success' : ''));
+
+                    // Update step indicators
+                    if (step === 'error') {
+                        steps.forEach(function(s) { if (s.dataset.step === sitemapStepOrder[stepIndex]) s.classList.add('error'); });
+                        bar.className = 'progress-bar error';
+                        statusEl.textContent = '错误: ' + msg;
+                        return;
+                    }
+
+                    if (step === 'done' || step === 'complete') {
+                        // Mark all steps done
+                        steps.forEach(function(s) { s.classList.add('done'); });
+                        bar.style.width = '100%';
+                        bar.className = 'progress-bar done';
+                        statusEl.textContent = msg;
+
+                        // Show result
+                        if (data && data.status === 'success') {
+                            var result = document.getElementById('sitemap-result');
+                            result.classList.add('show');
+                            var stats = document.getElementById('sitemap-stats');
+                            var tc = data.tag_counts || {};
+                            var tcHtml = Object.entries(tc).map(function(e) {
+                                return '<div class="stat-item"><div class="stat-value">' + e[1] + '</div><div class="stat-label">' + e[0] + '</div></div>';
+                            }).join('');
+                            stats.innerHTML =
+                                '<div class="stat-item"><div class="stat-value">' + (data.element_count || 0) + '</div><div class="stat-label">总元素数</div></div>' +
+                                '<div class="stat-item"><div class="stat-value">' + (data.name || 'default') + '</div><div class="stat-label">知识库</div></div>' +
+                                tcHtml;
+                            addLog('已存入知识库 sitemap_' + (data.name || 'default'), 'success');
+                        }
+
+                        // Reset buttons
+                        document.getElementById('btn-start-sitemap').disabled = false;
+                        document.getElementById('btn-cancel-sitemap').style.display = 'none';
+                        sitemapEventSource.close();
+                        sitemapEventSource = null;
+
+                        // Refresh collection list
+                        setTimeout(refreshCollections, 500);
+                        return;
+                    }
+
+                    // Advance progress (only forward, since steps like explore_click repeat)
+                    var stepPos = sitemapStepOrder.indexOf(step);
+                    if (stepPos >= stepIndex) stepIndex = stepPos;
+                    var pct = Math.min(95, Math.round((stepIndex + 1) / sitemapStepOrder.length * 100));
+                    bar.style.width = pct + '%';
+
+                    // Highlight current step
+                    steps.forEach(function(s) {
+                        var si = sitemapStepOrder.indexOf(s.dataset.step);
+                        if (si < stepIndex) s.classList.add('done');
+                        else if (si === stepIndex) s.classList.add('active');
+                    });
+
+                    statusEl.textContent = msg;
+
+                    if (data && data.count) {
+                        addLog('发现 ' + data.count + ' 个可交互元素', 'highlight');
+                    }
+                } catch(e) {
+                    addLog('解析响应失败: ' + e.message, 'warn');
+                }
+            };
+
+            sitemapEventSource.onerror = function() {
+                if (sitemapEventSource && sitemapEventSource.readyState === EventSource.CLOSED) {
+                    addLog('连接已关闭', 'warn');
+                    document.getElementById('btn-start-sitemap').disabled = false;
+                    document.getElementById('btn-cancel-sitemap').style.display = 'none';
+                }
+            };
+        }
+
+        function cancelSitemapGeneration() {
+            if (sitemapEventSource) {
+                sitemapEventSource.close();
+                sitemapEventSource = null;
+            }
+            document.getElementById('sitemap-progress-bar').className = 'progress-bar error';
+            document.getElementById('sitemap-status-text').textContent = '已取消';
+            document.getElementById('btn-start-sitemap').disabled = false;
+            document.getElementById('btn-cancel-sitemap').style.display = 'none';
+        }
+
+        function checkCookieStatus() {
+            // Check if cookies file exists via API
+            fetch(BASE_URL + '/api/admin/collections')
+                .then(function() {
+                    // Just check if we have sitemap knowledge — implies cookie might be cached
+                    var statusEl = document.getElementById('cookie-status');
+                    if (statusEl) statusEl.style.display = 'inline-block';
+                })
+                .catch(function() {});
+        }
+
+        // ======================== Init ========================
+        checkConnection();
+        refreshCollections();
+        refreshAgents();
+        loadSettings();
+        loadStrategies();
+        checkCookieStatus();
+    </script>
+</body>
+</html>

@@ -107,7 +107,7 @@
         <h3>API Controls</h3>
         <div class="api-controls">
             <label for="api-url">Backend URL:</label>
-            <input type="text" id="api-url" value="http://localhost:8000" placeholder="http://localhost:8000">
+            <input type="text" id="api-url" value="http://localhost:8001" placeholder="http://localhost:8001">
 
             <label for="site-id">Site ID:</label>
             <input type="text" id="site-id" value="default" placeholder="default">
@@ -133,6 +133,13 @@
     </div>
 
     <div class="demo-section">
+        <h3>Demo Questions</h3>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button onclick="sendDemoQuestion('帮我调整一下商品拣货位')" style="padding:10px 16px;background:#fff;border:1px solid #0066cc;color:#0066cc;border-radius:6px;cursor:pointer;font-size:14px;">帮我调整一下商品拣货位</button>
+        </div>
+    </div>
+
+    <div class="demo-section">
         <h3>Console Commands</h3>
         <p>Open the browser console (F12) and try:</p>
         <code>VoltaireAI.toggle()</code> - Toggle dialog visibility<br>
@@ -143,7 +150,7 @@
 
     <script>
         // Configure base URL before loading the script
-        window.VOLTAIRE_BASE_URL = 'http://localhost:8000';
+        window.VOLTAIRE_BASE_URL = 'http://localhost:8001';
 
         function applySettings() {
             const apiUrl = document.getElementById('api-url').value;
@@ -159,6 +166,22 @@
         function toggleDialog() {
             if (window.VoltaireAI) {
                 window.VoltaireAI.toggle();
+            }
+        }
+
+        function sendDemoQuestion(question) {
+            if (window.VoltaireAI) {
+                // Ensure dialog is visible
+                var dialog = document.querySelector('.voltaire-dialog');
+                if (dialog && !dialog.classList.contains('active')) {
+                    window.VoltaireAI.toggle();
+                }
+                // Small delay to let dialog open before sending
+                setTimeout(function() {
+                    window.VoltaireAI.sendMessage(question);
+                }, 300);
+            } else {
+                alert('VoltaireAI not loaded yet. Please wait a moment and try again.');
             }
         }
 

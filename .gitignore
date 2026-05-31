@@ -28,3 +28,16 @@ logs/
 backend/config/settings.json
 backend/config/agents.json
 .chroma/
+
+# Playwright MCP
+.playwright-mcp/
+
+# Runtime data
+backend/.voltaire_knowledge/
+
+# Temp screenshots
+docs-hero.png
+docs-preview.png
+
+# Nested backend (duplicate)
+backend/backend/

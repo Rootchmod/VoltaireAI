@@ -1,10 +1,12 @@
 # backend/main.py
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 import uvicorn
 
-# 导入API路由
-from backend.api.routes import router as api_router
+# 导入API路由（使用相对导入）
+from api.routes import router as api_router
 
 app = FastAPI(
     title="VoltaireAI Backend",
@@ -24,6 +26,11 @@ app.add_middleware(
 # 注册API路由
 app.include_router(api_router)
 
+# 挂载前端静态文件（/static 前缀）
+frontend_path = os.path.join(os.path.dirname(__file__), "..", "frontend")
+if os.path.exists(frontend_path):
+    app.mount("/static", StaticFiles(directory=frontend_path, html=True), name="frontend")
+
 @app.get("/")
 async def root():
     return {"message": "VoltaireAI Backend is running"}
@@ -33,4 +40,4 @@ async def health_check():
     return {"status": "healthy"}
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8001)
