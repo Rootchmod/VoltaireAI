@@ -1,0 +1,365 @@
+{
+  "opening": {
+    "start": 0,
+    "duration": 18,
+    "name": "开场 Hook",
+    "files": [
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\opening\\line_00.wav",
+        9.92
+      ],
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\opening\\line_01.wav",
+        6.88
+      ]
+    ]
+  },
+  "pain1": {
+    "start": 18,
+    "duration": 26,
+    "name": "痛点1: 页面即迷宫",
+    "files": [
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\pain1\\line_00.wav",
+        8.96
+      ],
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\pain1\\line_01.wav",
+        10.4
+      ],
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\pain1\\line_02.wav",
+        6.56
+      ],
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\pain1\\line_03.wav",
+        2.88
+      ]
+    ]
+  },
+  "pain2": {
+    "start": 44,
+    "duration": 26,
+    "name": "痛点2: 客服重复",
+    "files": [
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\pain2\\line_00.wav",
+        4.96
+      ],
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\pain2\\line_01.wav",
+        8.8
+      ],
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\pain2\\line_02.wav",
+        13.76
+      ]
+    ]
+  },
+  "pain3": {
+    "start": 70,
+    "duration": 25,
+    "name": "痛点3: AI 落地难",
+    "files": [
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\pain3\\line_00.wav",
+        5.92
+      ],
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\pain3\\line_01.wav",
+        12.32
+      ],
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\pain3\\line_02.wav",
+        10.88
+      ],
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\pain3\\line_03.wav",
+        13.6
+      ],
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\pain3\\line_04.wav",
+        10.72
+      ]
+    ]
+  },
+  "whatis": {
+    "start": 95,
+    "duration": 20,
+    "name": "VoltaireAI 是什么",
+    "files": [
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\whatis\\line_00.wav",
+        10.56
+      ],
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\whatis\\line_01.wav",
+        12.64
+      ],
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\whatis\\line_02.wav",
+        5.28
+      ]
+    ]
+  },
+  "comparison": {
+    "start": 115,
+    "duration": 25,
+    "name": "对比表格",
+    "files": [
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\comparison\\line_00.wav",
+        12.8
+      ],
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\comparison\\line_01.wav",
+        8.8
+      ],
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\comparison\\line_02.wav",
+        9.6
+      ],
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\comparison\\line_03.wav",
+        11.36
+      ]
+    ]
+  },
+  "capabilities": {
+    "start": 140,
+    "duration": 25,
+    "name": "四大核心能力",
+    "files": [
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\capabilities\\line_00.wav",
+        8.48
+      ],
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\capabilities\\line_01.wav",
+        7.84
+      ],
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\capabilities\\line_02.wav",
+        10.24
+      ],
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\capabilities\\line_03.wav",
+        8.64
+      ]
+    ]
+  },
+  "demo_intro": {
+    "start": 165,
+    "duration": 10,
+    "name": "Demo 引入",
+    "files": [
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\demo_intro\\line_00.wav",
+        3.2
+      ]
+    ]
+  },
+  "demo_qa": {
+    "start": 175,
+    "duration": 30,
+    "name": "场景A: 智能问答",
+    "files": [
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\demo_qa\\line_00.wav",
+        5.28
+      ],
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\demo_qa\\line_01.wav",
+        5.76
+      ],
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\demo_qa\\line_02.wav",
+        14.24
+      ],
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\demo_qa\\line_03.wav",
+        10.08
+      ]
+    ]
+  },
+  "demo_op": {
+    "start": 205,
+    "duration": 40,
+    "name": "场景B: 分步操作",
+    "files": [
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\demo_op\\line_00.wav",
+        4.48
+      ],
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\demo_op\\line_01.wav",
+        10.88
+      ],
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\demo_op\\line_02.wav",
+        9.76
+      ],
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\demo_op\\line_03.wav",
+        7.36
+      ],
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\demo_op\\line_04.wav",
+        2.88
+      ]
+    ]
+  },
+  "demo_fix": {
+    "start": 245,
+    "duration": 25,
+    "name": "场景C: 失败自修复",
+    "files": [
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\demo_fix\\line_00.wav",
+        8.8
+      ],
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\demo_fix\\line_01.wav",
+        8.64
+      ],
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\demo_fix\\line_02.wav",
+        7.2
+      ],
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\demo_fix\\line_03.wav",
+        16.96
+      ]
+    ]
+  },
+  "tech_agent": {
+    "start": 270,
+    "duration": 28,
+    "name": "Agent 配置系统",
+    "files": [
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\tech_agent\\line_00.wav",
+        12.16
+      ],
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\tech_agent\\line_01.wav",
+        8.8
+      ],
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\tech_agent\\line_02.wav",
+        16.16
+      ]
+    ]
+  },
+  "tech_kb": {
+    "start": 298,
+    "duration": 28,
+    "name": "三类知识库",
+    "files": [
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\tech_kb\\line_00.wav",
+        8.96
+      ],
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\tech_kb\\line_01.wav",
+        11.04
+      ],
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\tech_kb\\line_02.wav",
+        10.72
+      ],
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\tech_kb\\line_03.wav",
+        7.84
+      ],
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\tech_kb\\line_04.wav",
+        10.24
+      ]
+    ]
+  },
+  "tech_rag": {
+    "start": 326,
+    "duration": 24,
+    "name": "11 种 RAG 策略",
+    "files": [
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\tech_rag\\line_00.wav",
+        11.52
+      ],
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\tech_rag\\line_01.wav",
+        12.16
+      ],
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\tech_rag\\line_02.wav",
+        12.96
+      ],
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\tech_rag\\line_03.wav",
+        19.52
+      ]
+    ]
+  },
+  "tech_explorer": {
+    "start": 350,
+    "duration": 22,
+    "name": "站点探索器",
+    "files": [
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\tech_explorer\\line_00.wav",
+        10.88
+      ],
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\tech_explorer\\line_01.wav",
+        12.96
+      ],
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\tech_explorer\\line_02.wav",
+        12.0
+      ]
+    ]
+  },
+  "install": {
+    "start": 372,
+    "duration": 28,
+    "name": "安装部署",
+    "files": [
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\install\\line_00.wav",
+        15.84
+      ],
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\install\\line_01.wav",
+        14.88
+      ],
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\install\\line_02.wav",
+        13.44
+      ]
+    ]
+  },
+  "closing": {
+    "start": 400,
+    "duration": 30,
+    "name": "结尾",
+    "files": [
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\closing\\line_00.wav",
+        6.4
+      ],
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\closing\\line_01.wav",
+        6.4
+      ],
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\closing\\line_02.wav",
+        14.56
+      ],
+      [
+        "D:\\work\\外挂式ai\\docs\\out\\tts_audio\\closing\\line_03.wav",
+        7.04
+      ]
+    ]
+  }
+}

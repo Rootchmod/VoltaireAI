@@ -1,0 +1,2 @@
+file 'D:/work/外挂式ai/docs/out/tts_audio/line_opening_00.wav'
+file 'D:/work/外挂式ai/docs/out/tts_audio/line_opening_01.wav'

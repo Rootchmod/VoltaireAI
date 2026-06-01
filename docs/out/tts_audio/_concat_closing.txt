@@ -1,0 +1,4 @@
+file 'D:/work/外挂式ai/docs/out/tts_audio/line_closing_00.wav'
+file 'D:/work/外挂式ai/docs/out/tts_audio/line_closing_01.wav'
+file 'D:/work/外挂式ai/docs/out/tts_audio/line_closing_02.wav'
+file 'D:/work/外挂式ai/docs/out/tts_audio/line_closing_03.wav'

@@ -1,0 +1,2 @@
+file 'D:\work\外挂式ai\docs/out/tts_audio/final_audio_trimmed.wav'
+file 'D:\work\外挂式ai\docs/out/tts_audio/tail_silence.wav'
