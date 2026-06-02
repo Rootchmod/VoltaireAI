@@ -576,7 +576,8 @@
     <div class="toast" id="toast"></div>
 
     <script>
-        const BASE_URL = (window.VOLTAIRE_ADMIN_URL || 'http://localhost:8001').replace(/\/+$/, '');
+        // 自动检测API地址：优先使用配置，否则使用当前页面的origin
+        const BASE_URL = (window.VOLTAIRE_ADMIN_URL || window.location.origin || 'http://localhost:8001').replace(/\/+$/, '');
         let editingAgentId = null;
 
         // ======================== Toast ========================
@@ -621,7 +622,7 @@
         function refreshCollections() {
             var el = document.getElementById('collections-list');
             el.innerHTML = '<div class="empty-state"><p>加载中...</p></div>';
-            fetch(BASE_URL + '/api/admin/collections')
+            fetch(BASE_URL + '/VoltaireAI/admin/collections')
                 .then(function(r) { return r.json(); })
                 .then(function(data) {
                     var collections = data.collections || [];
@@ -688,7 +689,7 @@
             document.getElementById('collection-elem-count').textContent = '';
             modal.classList.add('show');
 
-            fetch(BASE_URL + '/api/admin/collections/' + encodeURIComponent(category) + '/' + encodeURIComponent(name))
+            fetch(BASE_URL + '/VoltaireAI/admin/collections/' + encodeURIComponent(category) + '/' + encodeURIComponent(name))
                 .then(function(r) {
                     if (!r.ok) throw new Error('获取详情失败 (' + r.status + ')');
                     return r.json();
@@ -727,7 +728,7 @@
         function deleteElement(elementId) {
             if (!_viewCat || !_viewName) return;
             if (!confirm('确定删除元素 "' + elementId + '"？')) return;
-            fetch(BASE_URL + '/api/admin/collections/' + encodeURIComponent(_viewCat) + '/' + encodeURIComponent(_viewName) + '/elements/' + encodeURIComponent(elementId), { method: 'DELETE' })
+            fetch(BASE_URL + '/VoltaireAI/admin/collections/' + encodeURIComponent(_viewCat) + '/' + encodeURIComponent(_viewName) + '/elements/' + encodeURIComponent(elementId), { method: 'DELETE' })
                 .then(function(r) {
                     if (!r.ok) throw new Error('删除失败');
                     return r.json();
@@ -751,7 +752,7 @@
 
         function deleteCollection(category, name) {
             if (!confirm('确定删除知识库 "' + category + '/' + name + '"？此操作不可撤销。')) return;
-            fetch(BASE_URL + '/api/admin/collections/' + encodeURIComponent(category) + '/' + encodeURIComponent(name), { method: 'DELETE' })
+            fetch(BASE_URL + '/VoltaireAI/admin/collections/' + encodeURIComponent(category) + '/' + encodeURIComponent(name), { method: 'DELETE' })
                 .then(function(r) {
                     if (!r.ok) return r.json().then(function(e) { throw new Error(e.detail || '删除失败'); });
                     return r.json();
@@ -773,7 +774,7 @@
             var name = document.getElementById('new-col-name').value.trim();
             var description = document.getElementById('new-col-desc').value.trim();
             if (!name) { showToast('请输入库名称', 'error'); return; }
-            fetch(BASE_URL + '/api/admin/collections', {
+            fetch(BASE_URL + '/VoltaireAI/admin/collections', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ category: category, name: name, description: description })
@@ -815,7 +816,7 @@
             var input = document.getElementById('kb-desc-input-' + category + '-' + name);
             if (!input) return;
             var desc = input.value.trim();
-            fetch(BASE_URL + '/api/admin/collections/' + encodeURIComponent(category) + '/' + encodeURIComponent(name), {
+            fetch(BASE_URL + '/VoltaireAI/admin/collections/' + encodeURIComponent(category) + '/' + encodeURIComponent(name), {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ description: desc })
@@ -871,7 +872,7 @@
             formData.append('strategy_id', strategyId);
             formData.append('file', file);
 
-            fetch(BASE_URL + '/api/admin/documents/upload', { method: 'POST', body: formData })
+            fetch(BASE_URL + '/VoltaireAI/admin/documents/upload', { method: 'POST', body: formData })
                 .then(function(r) {
                     if (!r.ok) return r.json().then(function(e) { throw new Error(e.detail || '上传失败'); });
                     return r.json();
@@ -902,7 +903,7 @@
         function refreshAgents() {
             var el = document.getElementById('agents-list');
             el.innerHTML = '<div class="empty-state"><p>加载中...</p></div>';
-            fetch(BASE_URL + '/api/admin/agents')
+            fetch(BASE_URL + '/VoltaireAI/admin/agents')
                 .then(function(r) { return r.json(); })
                 .then(function(data) {
                     var agents = data.agents || [];
@@ -935,7 +936,7 @@
 
         function openAgentEdit(agentId) {
             editingAgentId = agentId;
-            fetch(BASE_URL + '/api/admin/agents')
+            fetch(BASE_URL + '/VoltaireAI/admin/agents')
                 .then(function(r) { return r.json(); })
                 .then(function(data) {
                     var agents = data.agents || [];
@@ -960,7 +961,7 @@
                 rules: document.getElementById('edit-agent-rules').value.split('\n').filter(Boolean)
             };
 
-            fetch(BASE_URL + '/api/admin/agents/' + encodeURIComponent(editingAgentId), {
+            fetch(BASE_URL + '/VoltaireAI/admin/agents/' + encodeURIComponent(editingAgentId), {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(config)
@@ -979,7 +980,7 @@
 
         function deleteAgent(agentId) {
             if (!confirm('确定删除 Agent "' + agentId + '"？')) return;
-            fetch(BASE_URL + '/api/admin/agents/' + encodeURIComponent(agentId), { method: 'DELETE' })
+            fetch(BASE_URL + '/VoltaireAI/admin/agents/' + encodeURIComponent(agentId), { method: 'DELETE' })
                 .then(function(r) {
                     if (!r.ok) throw new Error('删除失败');
                     return r.json();
@@ -1004,7 +1005,7 @@
         var ALL_STRATEGIES = [];
 
         function loadStrategies() {
-            fetch(BASE_URL + '/api/admin/optimization-strategies')
+            fetch(BASE_URL + '/VoltaireAI/admin/optimization-strategies')
                 .then(function(r) { return r.json(); })
                 .then(function(data) {
                     ALL_STRATEGIES = data.strategies || [];
@@ -1041,7 +1042,7 @@
 
         // ======================== Settings ========================
         function loadSettings() {
-            fetch(BASE_URL + '/api/settings')
+            fetch(BASE_URL + '/VoltaireAI/settings')
                 .then(function(r) { return r.json(); })
                 .then(function(data) {
                     var sources = data.model_sources || [];
@@ -1075,7 +1076,7 @@
                 default_model_source: document.getElementById('setting-name').value || 'default'
             };
 
-            fetch(BASE_URL + '/api/settings', {
+            fetch(BASE_URL + '/VoltaireAI/settings', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(settings)
@@ -1103,7 +1104,7 @@
                 model: document.getElementById('setting-model').value
             };
 
-            fetch(BASE_URL + '/api/admin/settings/test-connection', {
+            fetch(BASE_URL + '/VoltaireAI/admin/settings/test-connection', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(config)
@@ -1204,7 +1205,7 @@
             }
 
             // Build SSE URL with optional login params
-            var sseUrl = BASE_URL + '/api/admin/sitemap/generate-stream?url=' + encodeURIComponent(url) + '&name=' + encodeURIComponent(name);
+            var sseUrl = BASE_URL + '/VoltaireAI/admin/sitemap/generate-stream?url=' + encodeURIComponent(url) + '&name=' + encodeURIComponent(name);
 
             var loginUrl = document.getElementById('sitemap-login-url').value.trim();
             var username = document.getElementById('sitemap-username').value.trim();
@@ -1324,7 +1325,7 @@
 
         function checkCookieStatus() {
             // Check if cookies file exists via API
-            fetch(BASE_URL + '/api/admin/collections')
+            fetch(BASE_URL + '/VoltaireAI/admin/collections')
                 .then(function() {
                     // Just check if we have sitemap knowledge — implies cookie might be cached
                     var statusEl = document.getElementById('cookie-status');

@@ -860,7 +860,7 @@ def generate_sitemap(
             # Upload to API if requested
             if upload_to_api:
                 _progress("upload", "正在上传到知识库...")
-                api_url = upload_to_api.rstrip("/") + "/api/upload-dom"
+                api_url = upload_to_api.rstrip("/") + "/VoltaireAI/upload-dom"
                 api_data = convert_to_api_format(elements, name)
 
                 import urllib.request

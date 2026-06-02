@@ -103,7 +103,7 @@
 
             state.scanStatus = 'uploading';
 
-            fetch(BASE_URL + '/api/upload-dom', {
+            fetch(BASE_URL + '/VoltaireAI/upload-dom', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -682,7 +682,7 @@
     // ── SSE Streaming ─────────────────────────────────────
     function trySSE(text, typingId, sendBtn, messagesDiv) {
         return new Promise(function(resolve, reject) {
-            var url = BASE_URL + '/api/chat/stream?' +
+            var url = BASE_URL + '/VoltaireAI/chat/stream?' +
                 'message=' + encodeURIComponent(text) +
                 '&site_id=' + encodeURIComponent(state.siteId);
 
@@ -741,7 +741,7 @@
 
     // ── Fallback POST ─────────────────────────────────────
     function fallbackPost(text, typingId, sendBtn, messagesDiv) {
-        return fetch(BASE_URL + '/api/chat', {
+        return fetch(BASE_URL + '/VoltaireAI/chat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ message: text, site_id: state.siteId })
@@ -1212,7 +1212,7 @@
     }
 
     function sendFeedback(status, message, originalRequest) {
-        fetch(BASE_URL + '/api/execution-feedback', {
+        fetch(BASE_URL + '/VoltaireAI/execution-feedback', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

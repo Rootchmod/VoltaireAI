@@ -450,7 +450,7 @@ pip install -r requirements.txt
         <div class="step-num">3</div>
         <div class="step-content">
           <h4>（可选）使用管理后台完善知识库</h4>
-          <p>打开 <code>frontend/admin.html</code>，通过可视化界面上传文档、管理 Agent 提示词、生成站点地图</p>
+          <p>打开 <code>http://localhost:8001/VoltaireAI/admin</code>，通过可视化界面上传文档、管理 Agent 提示词、生成站点地图</p>
         </div>
       </div>
     </div>
@@ -468,23 +468,23 @@ pip install -r requirements.txt
   <div class="container">
     <div class="section-label">API Reference</div>
     <h2 class="section-title">API 参考</h2>
-    <p class="section-desc">所有接口前缀 <code>/api</code>，默认端口 <code>8001</code></p>
+    <p class="section-desc">所有接口前缀 <code>/VoltaireAI</code>，默认端口 <code>8001</code></p>
 
     <h3>核心端点</h3>
     <div class="table-wrap">
     <table>
       <tr><th>方法</th><th>路径</th><th>说明</th></tr>
       <tr><td><code>GET</code></td><td><code>/health</code></td><td>健康检查</td></tr>
-      <tr><td><code>POST</code></td><td><code>/api/chat</code></td><td>发送聊天消息，返回 AI 回复（意图 + 代码 + 操作步骤）</td></tr>
-      <tr><td><code>GET</code></td><td><code>/api/chat/stream?message=&hellip;</code></td><td>SSE 流式聊天，实时推送处理进度</td></tr>
-      <tr><td><code>POST</code></td><td><code>/api/upload-dom</code></td><td>上传 DOM 元素到知识库</td></tr>
-      <tr><td><code>POST</code></td><td><code>/api/execution-feedback</code></td><td>代码执行结果反馈，失败时自动重试生成</td></tr>
-      <tr><td><code>GET</code></td><td><code>/api/settings</code></td><td>获取系统设置</td></tr>
-      <tr><td><code>POST</code></td><td><code>/api/settings</code></td><td>更新系统设置</td></tr>
+      <tr><td><code>POST</code></td><td><code>/VoltaireAI/chat</code></td><td>发送聊天消息，返回 AI 回复（意图 + 代码 + 操作步骤）</td></tr>
+      <tr><td><code>GET</code></td><td><code>/VoltaireAI/chat/stream?message=&hellip;</code></td><td>SSE 流式聊天，实时推送处理进度</td></tr>
+      <tr><td><code>POST</code></td><td><code>/VoltaireAI/upload-dom</code></td><td>上传 DOM 元素到知识库</td></tr>
+      <tr><td><code>POST</code></td><td><code>/VoltaireAI/execution-feedback</code></td><td>代码执行结果反馈，失败时自动重试生成</td></tr>
+      <tr><td><code>GET</code></td><td><code>/VoltaireAI/settings</code></td><td>获取系统设置</td></tr>
+      <tr><td><code>POST</code></td><td><code>/VoltaireAI/settings</code></td><td>更新系统设置</td></tr>
     </table>
     </div>
 
-    <h4 style="margin-top:20px;">POST /api/chat 示例</h4>
+    <h4 style="margin-top:20px;">POST /VoltaireAI/chat 示例</h4>
     <pre><code><span class="cm">// 请求</span>
 {
   <span class="str">"message"</span>: <span class="str">"帮我点击登录按钮"</span>,
@@ -508,20 +508,20 @@ pip install -r requirements.txt
         <div class="table-wrap">
         <table>
           <tr><th>方法</th><th>路径</th><th>说明</th></tr>
-          <tr><td><code>GET</code></td><td><code>/api/admin/collections</code></td><td>列出所有知识库集合（按类别分组）</td></tr>
-          <tr><td><code>POST</code></td><td><code>/api/admin/collections</code></td><td>创建新集合</td></tr>
-          <tr><td><code>GET</code></td><td><code>/api/admin/collections/{category}/{name}</code></td><td>获取集合详情</td></tr>
-          <tr><td><code>DELETE</code></td><td><code>/api/admin/collections/{category}/{name}</code></td><td>删除集合（默认库返回 403）</td></tr>
-          <tr><td><code>DELETE</code></td><td><code>/api/admin/collections/{category}/{name}/elements/{id}</code></td><td>删除单条元素</td></tr>
-          <tr><td><code>PUT</code></td><td><code>/api/admin/collections/{category}/{name}/elements/{id}</code></td><td>编辑单条元素</td></tr>
-          <tr><td><code>POST</code></td><td><code>/api/admin/documents/upload</code></td><td>上传文档（multipart/form-data）</td></tr>
-          <tr><td><code>GET</code></td><td><code>/api/admin/agents</code></td><td>列出所有 Agent 配置</td></tr>
-          <tr><td><code>PUT</code></td><td><code>/api/admin/agents/{agent_id}</code></td><td>更新/创建 Agent</td></tr>
-          <tr><td><code>DELETE</code></td><td><code>/api/admin/agents/{agent_id}</code></td><td>删除 Agent</td></tr>
-          <tr><td><code>POST</code></td><td><code>/api/admin/settings/test-connection</code></td><td>测试 LLM API 连接</td></tr>
-          <tr><td><code>GET</code></td><td><code>/api/admin/optimization-strategies</code></td><td>列出优化策略</td></tr>
-          <tr><td><code>POST</code></td><td><code>/api/admin/sitemap/generate</code></td><td>触发站点地图生成</td></tr>
-          <tr><td><code>GET</code></td><td><code>/api/admin/sitemap/generate-stream</code></td><td>SSE 流式站点地图生成</td></tr>
+          <tr><td><code>GET</code></td><td><code>/VoltaireAI/admin/collections</code></td><td>列出所有知识库集合（按类别分组）</td></tr>
+          <tr><td><code>POST</code></td><td><code>/VoltaireAI/admin/collections</code></td><td>创建新集合</td></tr>
+          <tr><td><code>GET</code></td><td><code>/VoltaireAI/admin/collections/{category}/{name}</code></td><td>获取集合详情</td></tr>
+          <tr><td><code>DELETE</code></td><td><code>/VoltaireAI/admin/collections/{category}/{name}</code></td><td>删除集合（默认库返回 403）</td></tr>
+          <tr><td><code>DELETE</code></td><td><code>/VoltaireAI/admin/collections/{category}/{name}/elements/{id}</code></td><td>删除单条元素</td></tr>
+          <tr><td><code>PUT</code></td><td><code>/VoltaireAI/admin/collections/{category}/{name}/elements/{id}</code></td><td>编辑单条元素</td></tr>
+          <tr><td><code>POST</code></td><td><code>/VoltaireAI/admin/documents/upload</code></td><td>上传文档（multipart/form-data）</td></tr>
+          <tr><td><code>GET</code></td><td><code>/VoltaireAI/admin/agents</code></td><td>列出所有 Agent 配置</td></tr>
+          <tr><td><code>PUT</code></td><td><code>/VoltaireAI/admin/agents/{agent_id}</code></td><td>更新/创建 Agent</td></tr>
+          <tr><td><code>DELETE</code></td><td><code>/VoltaireAI/admin/agents/{agent_id}</code></td><td>删除 Agent</td></tr>
+          <tr><td><code>POST</code></td><td><code>/VoltaireAI/admin/settings/test-connection</code></td><td>测试 LLM API 连接</td></tr>
+          <tr><td><code>GET</code></td><td><code>/VoltaireAI/admin/optimization-strategies</code></td><td>列出优化策略</td></tr>
+          <tr><td><code>POST</code></td><td><code>/VoltaireAI/admin/sitemap/generate</code></td><td>触发站点地图生成</td></tr>
+          <tr><td><code>GET</code></td><td><code>/VoltaireAI/admin/sitemap/generate-stream</code></td><td>SSE 流式站点地图生成</td></tr>
         </table>
         </div>
       </div>
@@ -641,7 +641,7 @@ pip install -r requirements.txt
   │                      目标网站                             │
   │   voltaire.js ──→ 浮动按钮 + 对话框 + JS 执行引擎        │
   └───────────────────────┬─────────────────────────────────┘
-                          │  POST /api/chat  (或 SSE stream)
+                          │  POST /VoltaireAI/chat  (或 SSE stream)
   ┌───────────────────────▼─────────────────────────────────┐
   │                  VoltaireAI 后端                          │
   │                                                          │
@@ -698,8 +698,9 @@ pip install -r requirements.txt
 │   └── tests/                      <span class="cm"># 5 个测试文件 (27+ 测试用例)</span>
 ├── frontend/
 │   ├── voltaire.js                 <span class="cm"># 注入脚本 (1308 行 vanilla JS)</span>
-│   ├── admin.html                  <span class="cm"># 管理后台 SPA</span>
 │   └── domumd.js                   <span class="cm"># @testing-library/dom</span>
+├── backend/
+│   └── admin.html                  <span class="cm"># 管理后台 SPA (访问: /VoltaireAI/admin)</span>
 ├── docs/
 │   └── index.html                  <span class="cm"># 本文档</span>
 ├── requirements.txt
@@ -857,7 +858,10 @@ python backend/tools/sitemap_generator.py \
       <div class="card team-card" style="text-align: center;">
         <img src="leo.jpg" alt="Leo lyv" class="avatar" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-bottom: 16px; border: 2px solid var(--border-bright);">
         <h4>Leo lyv(吕磊烁)</h4>
-        <p style="margin-bottom: 4px;">电子科技大学</p>
+        <p style="margin-bottom: 4px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+          <img src="dzkj.png" alt="电子科技大学" style="width: 20px; height: 20px; object-fit: contain;">
+          <span>电子科技大学</span>
+        </p>
         <p style="color: var(--accent); font-weight: 600; font-size: 13px;">AI产品经理</p>
       </div>
 
@@ -865,7 +869,10 @@ python backend/tools/sitemap_generator.py \
       <div class="card team-card" style="text-align: center;">
         <img src="gro.jpg" alt="Gro" class="avatar" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-bottom: 16px; border: 2px solid var(--border-bright);">
         <h4>Gro(李奕曦)</h4>
-        <p style="margin-bottom: 4px;">广东财经大学</p>
+        <p style="margin-bottom: 4px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+          <img src="gdcj.png" alt="广东财经大学" style="width: 20px; height: 20px; object-fit: contain;">
+          <span>广东财经大学</span>
+        </p>
         <p style="color: var(--accent); font-weight: 600; font-size: 13px;">AI产品经理</p>
       </div>
     </div>
@@ -876,7 +883,7 @@ python backend/tools/sitemap_generator.py \
 <footer>
   <p style="color:var(--text);font-weight:600;margin-bottom:6px;">VoltaireAI</p>
   <p>网站外挂式 AI 助手 &mdash; 一行代码，无限可能</p>
-  <p style="margin-top:12px;font-size:12px;">Powered by FastAPI + LangChain + ChromaDB + Testing Library &bull; 文档生成于 2026-05-31</p>
+  <p style="margin-top:12px;font-size:12px;">Powered by FastAPI + LangChain + ChromaDB + Testing Library &bull; 文档生成于 2026-06-02</p>
 </footer>
 
 <script>

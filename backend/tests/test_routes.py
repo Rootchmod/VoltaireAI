@@ -24,7 +24,7 @@ def test_chat_endpoint():
         "message": "帮我点击登录按钮",
         "site_id": "test-site"
     }
-    response = client.post("/api/chat", json=request_data)
+    response = client.post("/VoltaireAI/chat", json=request_data)
 
     assert response.status_code == 200
     data = response.json()
@@ -33,7 +33,7 @@ def test_chat_endpoint():
 
 def test_get_settings_endpoint():
     """测试获取配置端点"""
-    response = client.get("/api/settings")
+    response = client.get("/VoltaireAI/settings")
 
     assert response.status_code == 200
     data = response.json()
@@ -63,7 +63,7 @@ def test_update_settings_endpoint():
     }
 
     try:
-        response = client.post("/api/settings", json=new_settings)
+        response = client.post("/VoltaireAI/settings", json=new_settings)
 
         assert response.status_code == 200
         assert response.json()["message"] == "Settings updated successfully"
@@ -80,7 +80,7 @@ def test_execution_feedback_success():
         "original_request": "点击登录按钮",
         "site_id": "test-site"
     }
-    response = client.post("/api/execution-feedback", json=feedback_data)
+    response = client.post("/VoltaireAI/execution-feedback", json=feedback_data)
 
     assert response.status_code == 200
     data = response.json()
@@ -95,7 +95,7 @@ def test_execution_feedback_failure():
         "original_request": "点击登录按钮",
         "site_id": "test-site"
     }
-    response = client.post("/api/execution-feedback", json=feedback_data)
+    response = client.post("/VoltaireAI/execution-feedback", json=feedback_data)
 
     assert response.status_code == 200
     data = response.json()

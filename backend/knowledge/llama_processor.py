@@ -1,17 +1,26 @@
 """
-LlamaIndex Document Processor for VoltaireAI
+Document Processor for VoltaireAI
 
-Processes DOM elements into LlamaIndex Documents for vector storage.
+Processes DOM elements into documents for vector storage.
 Supports category-based organization and optimization strategies.
 """
 
-from llama_index import Document
 from typing import Dict, Any, List, Optional
 import logging
 
 from knowledge.strategies import DEFAULT_STRATEGY_ID
 
 logger = logging.getLogger(__name__)
+
+
+# 简单的 Document 类，替代 llama_index.Document
+class SimpleDocument:
+    """简单的文档对象，用于存储文本和元数据"""
+    def __init__(self, text: str, metadata: Dict[str, Any], doc_id: str):
+        self.text = text
+        self.metadata = metadata
+        self.doc_id = doc_id
+
 
 class LlamaProcessor:
     """
@@ -22,9 +31,9 @@ class LlamaProcessor:
     Supports optimization strategies via OptimizationProcessor.
     """
 
-    def process_dom_elements(self, elements: List[Dict[str, Any]]) -> List[Document]:
+    def process_dom_elements(self, elements: List[Dict[str, Any]]) -> List[SimpleDocument]:
         """
-        Convert DOM elements to LlamaIndex Documents.
+        Convert DOM elements to Documents.
 
         Args:
             elements: List of DOM element dictionaries with:
@@ -35,7 +44,7 @@ class LlamaProcessor:
                 - actions: Available actions (click, fill, etc.)
 
         Returns:
-            List of LlamaIndex Document objects
+            List of Document objects
         """
         documents = []
 
@@ -52,7 +61,7 @@ class LlamaProcessor:
                 "element_id": element.get("id", f"elem_{i}")
             }
 
-            doc = Document(
+            doc = SimpleDocument(
                 text=content,
                 metadata=metadata,
                 doc_id=metadata["element_id"]

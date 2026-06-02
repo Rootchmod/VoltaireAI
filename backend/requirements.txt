@@ -1,0 +1,22 @@
+# Web Framework
+fastapi
+uvicorn[standard]
+
+# Data Validation
+pydantic
+
+# LLM Integration
+langchain
+langchain-openai
+langchain-core
+openai
+
+# Vector Database (optional, fallback to JSON if unavailable)
+chromadb
+
+# Utilities
+python-multipart
+python-dotenv
+
+# Testing (optional, for development)
+pytest

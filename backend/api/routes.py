@@ -19,7 +19,7 @@ from config.config_loader import load_settings, save_settings
 
 logger = logging.getLogger(__name__)
 
-router = APIRouter(prefix="/api", tags=["api"])
+router = APIRouter(prefix="/VoltaireAI", tags=["api"])
 
 # Get workflow engine and knowledge managers
 workflow_engine = get_workflow_engine()
